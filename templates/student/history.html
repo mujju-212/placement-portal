@@ -1,0 +1,115 @@
+﻿{% extends 'base.html' %}
+{% block title %}Application History{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Student Panel</h6>
+        <a href="{{ url_for('student_dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('student_profile') }}">
+            <i class="bi bi-person"></i> My Profile
+        </a>
+        <a href="{{ url_for('student_history') }}" class="active">
+            <i class="bi bi-clock-history"></i> History
+        </a>
+    </div>
+
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-clock-history"></i> 
+            Application History - {{ student.full_name }}
+        </h3>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center p-3 border-primary">
+                    <h4 class="text-primary">{{ applications|length }}</h4>
+                    <p class="mb-0">Total Applied</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 border-warning">
+                    <h4 class="text-warning">
+                        {{ applications | selectattr('status','eq','shortlisted') | list | length }}
+                    </h4>
+                    <p class="mb-0">Shortlisted</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 border-success">
+                    <h4 class="text-success">
+                        {{ applications | selectattr('status','eq','selected') | list | length }}
+                    </h4>
+                    <p class="mb-0">Selected</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 border-danger">
+                    <h4 class="text-danger">
+                        {{ applications | selectattr('status','eq','rejected') | list | length }}
+                    </h4>
+                    <p class="mb-0">Rejected</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                Complete Application History
+            </div>
+            <div class="card-body">
+                {% if applications %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Drive Name</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Location</th>
+                            <th>Salary</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ app.drive.drive_name }}</td>
+                            <td>{{ app.drive.company.company_name }}</td>
+                            <td>{{ app.drive.job_title }}</td>
+                            <td>{{ app.drive.location or 'N/A' }}</td>
+                            <td>{{ app.drive.salary or 'N/A' }}</td>
+                            <td>{{ app.applied_date.strftime('%d-%m-%Y') }}</td>
+                            <td>
+                                <span class="badge badge-{{ app.status }}">
+                                    {{ app.status | upper }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size:3rem;color:#ccc;"></i>
+                    <p class="text-muted mt-2">
+                        No application history yet. 
+                        <a href="{{ url_for('student_dashboard') }}">
+                            Browse drives
+                        </a>
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

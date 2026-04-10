@@ -1,0 +1,92 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.card {
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.card-header {
+    font-weight: bold;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+}
+
+.stat-card h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.stat-card p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.bg-students { background-color: #0d6efd; }
+.bg-companies { background-color: #198754; }
+.bg-drives { background-color: #ffc107; color: #333 !important; }
+.bg-applications { background-color: #dc3545; }
+
+.badge-pending { background-color: #ffc107; color: #333; }
+.badge-approved { background-color: #198754; }
+.badge-rejected { background-color: #dc3545; }
+.badge-blacklisted { background-color: #6c757d; }
+.badge-closed { background-color: #6c757d; }
+.badge-applied { background-color: #0d6efd; }
+.badge-shortlisted { background-color: #ffc107; color: #333; }
+.badge-selected { background-color: #198754; }
+
+.table th {
+    background-color: #f1f3f4;
+}
+
+.flash-messages {
+    margin-top: 0;
+}
+
+.flash-messages:empty {
+    display: none;
+}
+
+.drive-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.sidebar {
+    background-color: #343a40;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+.sidebar a {
+    color: #adb5bd;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    color: white;
+    background-color: #495057;
+}
+
+.sidebar a.active {
+    color: white;
+    background-color: #0d6efd;
+}
+
+.main-content {
+    padding: 20px;
+}

@@ -1,0 +1,171 @@
+﻿{% extends 'base.html' %}
+{% block title %}Manage Companies{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Admin Panel</h6>
+        <a href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin_companies') }}" class="active">
+            <i class="bi bi-briefcase"></i> Companies
+        </a>
+        <a href="{{ url_for('admin_students') }}">
+            <i class="bi bi-people"></i> Students
+        </a>
+        <a href="{{ url_for('admin_drives') }}">
+            <i class="bi bi-briefcase"></i> Drives
+        </a>
+        <a href="{{ url_for('admin_applications') }}">
+            <i class="bi bi-file-text"></i> Applications
+        </a>
+        <a href="{{ url_for('admin_search') }}">
+            <i class="bi bi-search"></i> Search
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-briefcase"></i> Manage Companies
+        </h3>
+
+        <!-- Search -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('admin_companies') }}" 
+                      class="row g-2">
+                    <div class="col-md-9">
+                        <input type="text" name="search" class="form-control"
+                               placeholder="Search by company name..."
+                               value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Companies Table -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                All Companies ({{ companies|length }})
+            </div>
+            <div class="card-body">
+                {% if companies %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Company Name</th>
+                            <th>HR Contact (Email/Phone)</th>
+                            <th>Website</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in companies %}
+                        <tr>
+                            <td>{{ company.id }}</td>
+                            <td>
+                                <i class="bi bi-briefcase"></i>
+                                {{ company.company_name }}
+                            </td>
+                            <td>
+                                {% if '@' in company.hr_contact %}
+                                <a href="mailto:{{ company.hr_contact }}" class="text-decoration-none">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    {{ company.hr_contact }}
+                                </a>
+                                {% else %}
+                                <a href="tel:{{ company.hr_contact }}" class="text-decoration-none">
+                                    <i class="bi bi-telephone-fill"></i>
+                                    {{ company.hr_contact }}
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if company.website %}
+                                    {% set website_url = company.website if company.website.startswith('http://') or company.website.startswith('https://') else 'https://' ~ company.website %}
+                                    <a href="{{ website_url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                        <i class="bi bi-globe2"></i>
+                                        {{ company.website }}
+                                    </a>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ company.approval_status }}">
+                                    {{ company.approval_status | upper }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if company.approval_status == 'pending' %}
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_reject_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-warning btn-sm">
+                                        Reject
+                                    </button>
+                                </form>
+                                {% elif company.approval_status == 'approved' %}
+                                <form method="POST" 
+                                      action="{{ url_for('admin_blacklist_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-secondary btn-sm">
+                                        Blacklist
+                                    </button>
+                                </form>
+                                {% elif company.approval_status == 'rejected' %}
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        Approve
+                                    </button>
+                                </form>
+                                {% elif company.approval_status == 'blacklisted' %}
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-primary btn-sm">
+                                        Re-Approve
+                                    </button>
+                                </form>
+                                {% endif %}
+
+                                <form method="POST" 
+                                      action="{{ url_for('admin_delete_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No companies found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

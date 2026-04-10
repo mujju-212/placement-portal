@@ -1,0 +1,99 @@
+﻿{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Student Panel</h6>
+        <a href="{{ url_for('student_dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('student_profile') }}" class="active">
+            <i class="bi bi-person"></i> My Profile
+        </a>
+        <a href="{{ url_for('student_history') }}">
+            <i class="bi bi-clock-history"></i> History
+        </a>
+    </div>
+
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-person-circle"></i> My Profile
+        </h3>
+
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                Edit Profile
+            </div>
+            <div class="card-body">
+                <form method="POST" 
+                      action="{{ url_for('student_profile') }}" 
+                      enctype="multipart/form-data">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" name="full_name" 
+                                   class="form-control"
+                                   value="{{ student.full_name }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" class="form-control"
+                                   value="{{ student.email }}" disabled>
+                            <small class="text-muted">Email cannot be changed</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Phone</label>
+                            <input type="text" name="phone" 
+                                   class="form-control"
+                                   value="{{ student.phone or '' }}"
+                                   placeholder="Enter phone number">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Department</label>
+                            <input type="text" name="department" 
+                                   class="form-control"
+                                   value="{{ student.department or '' }}"
+                                   placeholder="e.g. Computer Science">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">CGPA</label>
+                            <input type="number" name="cgpa" 
+                                   class="form-control"
+                                   value="{{ student.cgpa or '' }}"
+                                   step="0.01" min="0" max="10"
+                                   placeholder="e.g. 8.5">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Upload Resume (PDF)</label>
+                        <input type="file" name="resume" 
+                               class="form-control" accept=".pdf">
+                        {% if student.resume_filename %}
+                        <small class="text-success">
+                            <i class="bi bi-check-circle"></i>
+                            Resume uploaded: {{ student.resume_filename }}
+                            <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume_filename) }}" 
+                               target="_blank" class="ms-2">View</a>
+                        </small>
+                        {% else %}
+                        <small class="text-muted">No resume uploaded yet</small>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-check-circle"></i> Save Profile
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

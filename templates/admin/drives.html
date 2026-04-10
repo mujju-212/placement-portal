@@ -1,0 +1,120 @@
+﻿{% extends 'base.html' %}
+{% block title %}Manage Drives{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Admin Panel</h6>
+        <a href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin_companies') }}">
+            <i class="bi bi-briefcase"></i> Companies
+        </a>
+        <a href="{{ url_for('admin_students') }}">
+            <i class="bi bi-people"></i> Students
+        </a>
+        <a href="{{ url_for('admin_drives') }}" class="active">
+            <i class="bi bi-briefcase"></i> Drives
+        </a>
+        <a href="{{ url_for('admin_applications') }}">
+            <i class="bi bi-file-text"></i> Applications
+        </a>
+        <a href="{{ url_for('admin_search') }}">
+            <i class="bi bi-search"></i> Search
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-briefcase"></i> Manage Placement Drives
+        </h3>
+
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                All Placement Drives ({{ drives|length }})
+            </div>
+            <div class="card-body">
+                {% if drives %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Drive Name</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drive in drives %}
+                        <tr>
+                            <td>{{ drive.id }}</td>
+                            <td>{{ drive.drive_name }}</td>
+                            <td>{{ drive.company.company_name }}</td>
+                            <td>{{ drive.job_title }}</td>
+                            <td>{{ drive.deadline }}</td>
+                            <td>
+                                <span class="badge badge-{{ drive.status }}">
+                                    {{ drive.status | upper }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if drive.status == 'pending' %}
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_drive', drive_id=drive.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_reject_drive', drive_id=drive.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-danger btn-sm">
+                                        Reject
+                                    </button>
+                                </form>
+                                {% elif drive.status == 'approved' %}
+                                <form method="POST"
+                                      action="{{ url_for('admin_reject_drive', drive_id=drive.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x-circle"></i> Reject
+                                    </button>
+                                </form>
+                                {% elif drive.status == 'closed' %}
+                                <form method="POST"
+                                      action="{{ url_for('admin_approve_drive', drive_id=drive.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="bi bi-arrow-clockwise"></i> Re-Approve
+                                    </button>
+                                </form>
+                                {% elif drive.status == 'rejected' %}
+                                <form method="POST"
+                                      action="{{ url_for('admin_approve_drive', drive_id=drive.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="bi bi-check-circle"></i> Approve
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No placement drives found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

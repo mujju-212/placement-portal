@@ -1,0 +1,191 @@
+﻿{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Admin Panel</h6>
+        <a href="{{ url_for('admin_dashboard') }}" class="active">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin_companies') }}">
+            <i class="bi bi-briefcase"></i> Companies
+        </a>
+        <a href="{{ url_for('admin_students') }}">
+            <i class="bi bi-people"></i> Students
+        </a>
+        <a href="{{ url_for('admin_drives') }}">
+            <i class="bi bi-briefcase"></i> Drives
+        </a>
+        <a href="{{ url_for('admin_applications') }}">
+            <i class="bi bi-file-text"></i> Applications
+        </a>
+        <a href="{{ url_for('admin_search') }}">
+            <i class="bi bi-search"></i> Search
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-speedometer2"></i> Admin Dashboard
+        </h3>
+
+        <!-- Stat Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card bg-students">
+                    <h2>{{ total_students }}</h2>
+                    <p><i class="bi bi-people-fill"></i> Total Students</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-companies">
+                    <h2>{{ total_companies }}</h2>
+                    <p><i class="bi bi-briefcase"></i> Total Companies</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-drives">
+                    <h2>{{ total_drives }}</h2>
+                    <p><i class="bi bi-briefcase"></i> Total Drives</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-applications">
+                    <h2>{{ total_applications }}</h2>
+                    <p><i class="bi bi-file-text"></i> Total Applications</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Company Approvals -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <i class="bi bi-clock"></i> 
+                Pending Company Approvals ({{ pending_companies|length }})
+            </div>
+            <div class="card-body">
+                {% if pending_companies %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>HR Contact (Email/Phone)</th>
+                            <th>Website</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in pending_companies %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-briefcase"></i>
+                                {{ company.company_name }}
+                            </td>
+                            <td>
+                                {% if '@' in company.hr_contact %}
+                                <a href="mailto:{{ company.hr_contact }}" class="text-decoration-none">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    {{ company.hr_contact }}
+                                </a>
+                                {% else %}
+                                <a href="tel:{{ company.hr_contact }}" class="text-decoration-none">
+                                    <i class="bi bi-telephone-fill"></i>
+                                    {{ company.hr_contact }}
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if company.website %}
+                                    {% set website_url = company.website if company.website.startswith('http://') or company.website.startswith('https://') else 'https://' ~ company.website %}
+                                    <a href="{{ website_url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                        <i class="bi bi-globe2"></i>
+                                        {{ company.website }}
+                                    </a>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="bi bi-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_reject_company', company_id=company.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x"></i> Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">No pending company approvals</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Pending Drive Approvals -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-briefcase"></i> 
+                Pending Drive Approvals ({{ pending_drives|length }})
+            </div>
+            <div class="card-body">
+                {% if pending_drives %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Drive Name</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Deadline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drive in pending_drives %}
+                        <tr>
+                            <td>{{ drive.drive_name }}</td>
+                            <td>{{ drive.company.company_name }}</td>
+                            <td>{{ drive.job_title }}</td>
+                            <td>{{ drive.deadline }}</td>
+                            <td>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_approve_drive', drive_id=drive.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="bi bi-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="POST" 
+                                      action="{{ url_for('admin_reject_drive', drive_id=drive.id) }}" 
+                                      style="display:inline;">
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x"></i> Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mb-0">No pending drive approvals</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

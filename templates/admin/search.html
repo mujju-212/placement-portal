@@ -1,0 +1,148 @@
+﻿{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Admin Panel</h6>
+        <a href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('admin_companies') }}">
+            <i class="bi bi-briefcase"></i> Companies
+        </a>
+        <a href="{{ url_for('admin_students') }}">
+            <i class="bi bi-people"></i> Students
+        </a>
+        <a href="{{ url_for('admin_drives') }}">
+            <i class="bi bi-briefcase"></i> Drives
+        </a>
+        <a href="{{ url_for('admin_applications') }}">
+            <i class="bi bi-file-text"></i> Applications
+        </a>
+        <a href="{{ url_for('admin_search') }}" class="active">
+            <i class="bi bi-search"></i> Search
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            <i class="bi bi-search"></i> Search
+        </h3>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('admin_search') }}" 
+                      class="row g-2">
+                    <div class="col-md-5">
+                        <input type="text" name="q" class="form-control"
+                               placeholder="Enter search term..."
+                               value="{{ query }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="type" class="form-select">
+                            <option value="student" 
+                                {% if search_type == 'student' %}selected{% endif %}>
+                                Search Students
+                            </option>
+                            <option value="company" 
+                                {% if search_type == 'company' %}selected{% endif %}>
+                                Search Companies
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Student Results -->
+        {% if search_type == 'student' and query %}
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                Student Results ({{ students|length }})
+            </div>
+            <div class="card-body">
+                {% if students %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>CGPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.id }}</td>
+                            <td>{{ student.full_name }}</td>
+                            <td>{{ student.email }}</td>
+                            <td>{{ student.phone or 'N/A' }}</td>
+                            <td>{{ student.department or 'N/A' }}</td>
+                            <td>{{ student.cgpa or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No students found for "{{ query }}"</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Company Results -->
+        {% if search_type == 'company' and query %}
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                Company Results ({{ companies|length }})
+            </div>
+            <div class="card-body">
+                {% if companies %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Company Name</th>
+                            <th>HR Contact</th>
+                            <th>Website</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in companies %}
+                        <tr>
+                            <td>{{ company.id }}</td>
+                            <td>{{ company.company_name }}</td>
+                            <td>{{ company.hr_contact }}</td>
+                            <td>{{ company.website or 'N/A' }}</td>
+                            <td>
+                                <span class="badge badge-{{ company.approval_status }}">
+                                    {{ company.approval_status | upper }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No companies found for "{{ query }}"</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+

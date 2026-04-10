@@ -1,0 +1,120 @@
+﻿{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mt-0 gx-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+        <h6 class="text-white text-center mb-3">Student Panel</h6>
+        <a href="{{ url_for('student_dashboard') }}" class="active">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="{{ url_for('student_profile') }}">
+            <i class="bi bi-person"></i> My Profile
+        </a>
+        <a href="{{ url_for('student_history') }}">
+            <i class="bi bi-clock-history"></i> History
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 main-content">
+        <h3 class="mb-4">
+            Welcome, {{ student.full_name }}!
+        </h3>
+
+        <!-- Available Drives -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-briefcase"></i> 
+                Available Placement Drives ({{ approved_drives|length }})
+            </div>
+            <div class="card-body">
+                {% if approved_drives %}
+                <div class="row">
+                    {% for drive in approved_drives %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card drive-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ drive.job_title }}</h5>
+                                <h6 class="text-muted">
+                                    {{ drive.company.company_name }}
+                                </h6>
+                                <p class="mb-1">
+                                    <i class="bi bi-geo-alt"></i> 
+                                    {{ drive.location or 'Not specified' }}
+                                </p>
+                                <p class="mb-1">
+                                    <i class="bi bi-currency-rupee"></i> 
+                                    {{ drive.salary or 'Not specified' }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-calendar"></i> 
+                                    Deadline: {{ drive.deadline }}
+                                </p>
+
+                                {% if drive.id in applied_drive_ids %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Already Applied
+                                </span>
+                                {% else %}
+                                <a href="{{ url_for('student_drive_detail', drive_id=drive.id) }}" 
+                                   class="btn btn-dark btn-sm">
+                                    View & Apply
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No approved placement drives available right now.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- My Applications -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-file-text"></i> 
+                My Applications ({{ my_applications|length }})
+            </div>
+            <div class="card-body">
+                {% if my_applications %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Drive Name</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in my_applications %}
+                        <tr>
+                            <td>{{ app.drive.drive_name }}</td>
+                            <td>{{ app.drive.company.company_name }}</td>
+                            <td>{{ app.drive.job_title }}</td>
+                            <td>{{ app.applied_date.strftime('%d-%m-%Y') }}</td>
+                            <td>
+                                <span class="badge badge-{{ app.status }}">
+                                    {{ app.status | upper }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">You have not applied to any drives yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
