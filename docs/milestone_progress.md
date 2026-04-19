@@ -22,3 +22,14 @@ Evidence from current codebase:
 - Predefined admin login supported (no admin registration flow).
 - Company login blocked until admin approval.
 - Role-based access checks enforced before admin/company/student dashboard access.
+
+## Milestone: Admin Dashboard and Management
+
+Status: Completed
+
+Evidence from current codebase:
+- Admin dashboard shows totals for students, companies, drives, and applications.
+- Admin can approve/reject company registrations.
+- Admin can approve/reject drives and review applications.
+- Admin can search students and companies.
+- Admin can blacklist/unblacklist/delete students and companies.
