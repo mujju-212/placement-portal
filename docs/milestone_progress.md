@@ -44,3 +44,14 @@ Evidence from current codebase:
 - Company can create, edit, close, and delete drives.
 - Company can view applications received for each drive.
 - Company can update application status to shortlisted, selected, or rejected.
+
+## Milestone: Student Dashboard and Job Application System
+
+Status: Completed
+
+Evidence from current codebase:
+- Student can register, login, and edit profile details.
+- Student profile supports resume upload.
+- Student dashboard lists approved drives.
+- Student can view drive details and apply.
+- Student can see own applications and status updates in dashboard and history views.
