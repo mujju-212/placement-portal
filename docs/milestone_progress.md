@@ -33,3 +33,14 @@ Evidence from current codebase:
 - Admin can approve/reject drives and review applications.
 - Admin can search students and companies.
 - Admin can blacklist/unblacklist/delete students and companies.
+
+## Milestone: Company Dashboard and Job Management
+
+Status: Completed
+
+Evidence from current codebase:
+- Company dashboard available only for company role and linked company profile.
+- Unapproved companies cannot create drives.
+- Company can create, edit, close, and delete drives.
+- Company can view applications received for each drive.
+- Company can update application status to shortlisted, selected, or rejected.
