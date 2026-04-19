@@ -55,3 +55,15 @@ Evidence from current codebase:
 - Student dashboard lists approved drives.
 - Student can view drive details and apply.
 - Student can see own applications and status updates in dashboard and history views.
+
+## Milestone: Job Application History and Status Tracking
+
+Status: Completed
+
+Evidence from current codebase:
+- Application history is stored and displayed for each student.
+- Duplicate applications are prevented at application submission step.
+- Students can apply only to approved drives.
+- Only approved companies can create drives.
+- Status transitions supported in workflow: applied, shortlisted, selected, rejected.
+- Admin and company can review student applications; student can review own records.
